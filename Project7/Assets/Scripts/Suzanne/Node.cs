@@ -6,9 +6,7 @@ public class Node : MonoBehaviour {
 
     [SerializeField] private float m_Speed = 1f;
     [SerializeField] private int m_RandomDir;
-
-    int[] s_Used = new int[5];
-    Random rnd = new Random();
+    [SerializeField] private int m_LastDir;
 
     void Start ()
     {
@@ -17,31 +15,35 @@ public class Node : MonoBehaviour {
 	
 	void FixedUpdate ()
     {
-
-
         switch (m_RandomDir)
         {
             case 1:
-                this.transform.Translate(-Vector2.up * m_Speed * Time.fixedDeltaTime);
+                //down
+                this.transform.Translate(new Vector3(1 * m_Speed * Time.deltaTime, -1 * m_Speed * Time.deltaTime));
                 break;
             case 2:
-                this.transform.Translate(Vector2.up * m_Speed * Time.fixedDeltaTime);
+                //up
+                this.transform.Translate(new Vector3(-1 * m_Speed * Time.deltaTime, 1 * m_Speed * Time.deltaTime));
                 break;
             case 3:
-                this.transform.Translate(Vector2.right * m_Speed * Time.fixedDeltaTime);
+                //right
+                this.transform.Translate(new Vector3(1 * m_Speed * Time.deltaTime, 1 * m_Speed * Time.deltaTime));
                 break;
             case 4:
-                this.transform.Translate(-Vector2.right * m_Speed * Time.fixedDeltaTime);
+                //left
+                this.transform.Translate(new Vector3(-1 * m_Speed * Time.deltaTime, -1 * m_Speed * Time.deltaTime));
                 break;
         }
-
     }
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("collided with " + collision.collider.gameObject.name);
         if (collision.gameObject.tag == "Wall")
-        {
-            m_RandomDir = Random.Range(1, 5);
+        {         
+            m_LastDir = m_RandomDir;
+            while(m_RandomDir == m_LastDir)
+            {
+                m_RandomDir = Random.Range(1, 5);
+            }
 
         }
     }
