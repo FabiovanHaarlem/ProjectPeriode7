@@ -2,13 +2,48 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class NoteChecker : MonoBehaviour {
+public class NoteChecker : MonoBehaviour
+{
+    private List<NoteDecoy> m_MusicNotes;
 
+    private List<int> m_MiddleMusicNotesID;
 
-	void Start ()
+    public void GetMusicNotes(List<NoteDecoy> musicNotes, List<int> musicNotesID)
     {
-		
-	}
+        m_MusicNotes = musicNotes;
+        m_MiddleMusicNotesID = musicNotesID;
+    }
+
+    public void CheckIfMiddleNote(GameObject selectedMusicNote)
+    {
+        NoteDecoy musicNote = null;
+
+        for (int i = 0; i < m_MusicNotes.Count; i++)
+        {
+            if (selectedMusicNote.name == m_MusicNotes[i].name)
+            {
+                musicNote = m_MusicNotes[i];
+                break;
+            }
+        }
+
+        for (int i = 0; i < m_MiddleMusicNotesID.Count; i++)
+        {
+            if (m_MiddleMusicNotesID[i] == musicNote.GetID())
+            {
+                musicNote.IsMiddleMusicNote();
+                musicNote = null;
+                break;
+            }
+        }
+
+        if (musicNote != null)
+        {
+            musicNote.IsNotMiddleMusicNote();
+            musicNote = null;
+        }
+
+    }
 	
 
 	void Update ()
@@ -22,27 +57,33 @@ public class NoteChecker : MonoBehaviour {
 
                 if (hitInfo)
                 {
-                    
+                    CheckIfMiddleNote(hitInfo.collider.gameObject);
                 }
             }
         }
 #endif
-
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
         if (Input.GetMouseButtonDown(0))
         {
-            //Raycast();
+            Raycast();
+        }
+#endif
+    }
+#if UNITY_EDITOR || UNITY_STANDALONE_WIN
+    private void Raycast()
+    {
+        RaycastHit hit;
+
+        Ray ray = (Camera.main.ScreenPointToRay(Input.mousePosition));
+
+        Physics.Raycast(ray, out hit, Mathf.Infinity);
+
+        Debug.DrawRay(Camera.main.transform.position, ray.direction * 50, Color.red);
+
+        if (hit.collider.gameObject != null)
+        {
+            CheckIfMiddleNote(hit.collider.gameObject);
         }
     }
-
-    //private void Raycast()
-    //{
-    //    Ray ray = (Camera.main.ScreenPointToRay(Input.mousePosition));
-
-    //    RaycastHit2D hitInfo = Physics2D.Raycast(Camera.main.ScreenToWorldPoint(Input.mousePosition), Vector2.zero);
-    //    //Physics.Raycast(ray, out hit, Mathf.Infinity);
-
-    //    Debug.DrawRay(Camera.main.transform.position, ray.direction * 50, Color.red);
-
-       
-    //}
+#endif
 }
