@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class NoteChecker : MonoBehaviour
 {
-    private List<NoteDecoy> m_MusicNotes;
+    private List<Node> m_MusicNotes;
 
     private List<int> m_MiddleMusicNotesID;
 
-    public void GetMusicNotes(List<NoteDecoy> musicNotes, List<int> musicNotesID)
+    private List<MiddleMusicNote> m_MiddleMusicNotes;
+
+    public void GetMusicNotes(List<Node> musicNotes, List<int> musicNotesID, List<MiddleMusicNote> middleMusicNotes)
     {
         m_MusicNotes = musicNotes;
         m_MiddleMusicNotesID = musicNotesID;
@@ -16,7 +18,7 @@ public class NoteChecker : MonoBehaviour
 
     public void CheckIfMiddleNote(GameObject selectedMusicNote)
     {
-        NoteDecoy musicNote = null;
+        Node musicNote = null;
 
         for (int i = 0; i < m_MusicNotes.Count; i++)
         {
