@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class MiddleMusicNote : MonoBehaviour
 {
-    public void Setup(Vector2 position)
+    int m_ID;
+
+    public void Setup(Vector2 position, int id)
     {
         transform.position = position;
         gameObject.SetActive(true);
+        m_ID = id;
     }
 
     public void ResetMusicNote()

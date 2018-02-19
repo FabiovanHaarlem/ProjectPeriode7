@@ -21,7 +21,7 @@ GameObject:
   - component: {fileID: 4995420872392540}
   m_Layer: 0
   m_Name: BoundsNormalColliders
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -178,8 +178,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1089026754403288}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.0041353, y: 0.0035065, z: 0}
-  m_LocalScale: {x: 0.88875, y: 0.7339067, z: 1}
+  m_LocalPosition: {x: 0.009421, y: 0.0050538, z: 1.985}
+  m_LocalScale: {x: 0.74655, y: 0.6164816, z: 0.84}
   m_Children:
   - {fileID: 4222898762374706}
   - {fileID: 4266028582698910}
