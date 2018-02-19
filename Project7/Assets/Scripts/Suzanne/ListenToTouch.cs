@@ -5,29 +5,34 @@ using UnityEngine;
 public class ListenToTouch : MonoBehaviour {
 
     public Touch[] m_Touches;
-    [SerializeField] private GameObject s_Player;
-    [SerializeField] private Transform s_Startpos;
-	void Start ()
-    {
-		
-	}
-	
+    [SerializeField] private List<Renderer> s_Node = new List<Renderer>();
+
 	void Update ()
     {
+
         m_Touches = Input.touches;
 		if(Input.touchCount > 0)
         {
-            for(int i =0; i < Input.touchCount; i++)
+            for(int i = 0; i < Input.touchCount; i++)
             {
                 if (Input.GetTouch(i).phase == TouchPhase.Began)
                 {
                     //StaticInstanceManager.m_Instance.GetNoteChecker(this);
                     //multiple input.
-                    //Instantiate(s_Player, s_Startpos);
 
+                    Ray ray = Camera.main.ScreenPointToRay(new Vector3(m_Touches[i].position.x, m_Touches[i].position.y));
+                    RaycastHit hit;
+                    
+                    if (Physics.Raycast(ray, out hit))
+                    {
+                        //input when touched
+                        Destroy(hit.transform.gameObject);
+                    }
+                    
                 }
             }
         }
 	}
     
+
 }
