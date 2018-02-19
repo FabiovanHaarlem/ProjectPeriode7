@@ -4,8 +4,7 @@ using UnityEngine;
 
 public class NoteSpawner : MonoBehaviour
 {
-    private List<Node> m_AllCurrentlyUsedMusicNotes;
-    private List<Node> m_MiddleMusicNotes;
+    private List<Node> m_CurrentlyUsedMusicNotes;
     private List<Node> m_DecoyMusicNotes;
 
     private List<List<Node>> m_AllSongs;
@@ -17,10 +16,9 @@ public class NoteSpawner : MonoBehaviour
     void Start ()
     {
         m_AllSongs = new List<List<Node>>();
-        m_AllCurrentlyUsedMusicNotes = new List<Node>();
+        m_CurrentlyUsedMusicNotes = new List<Node>();
 
         m_MiddleCheckMusicNotes = new List<List<MiddleMusicNote>>();
-        m_MiddleMusicNotes = new List<Node>();
         m_DecoyMusicNotes = new List<Node>();
 
         m_CurrnetlyUsedMiddleCheckMusicNotes = new List<MiddleMusicNote>();
@@ -33,13 +31,13 @@ public class NoteSpawner : MonoBehaviour
 
     private void SetupGame()
     {
-        LoadMiddleMusicNotes();
+        LoadSongMusicNotes();
         LoadDecoyMusicNotes();
     }
 
     private void SetupLevel()
     {
-        PrepareMiddleNotes();
+        PrepareSongNotes();
         PrepareDecoyMusicNotes();
     }
 
@@ -47,24 +45,39 @@ public class NoteSpawner : MonoBehaviour
     {
         SetupLevel();
 
-        for (int i = 0; i < m_AllCurrentlyUsedMusicNotes.Count; i++)
+        for (int i = 0; i < m_CurrentlyUsedMusicNotes.Count; i++)
         {
-            m_AllCurrentlyUsedMusicNotes[i].Activate(new Vector2(Random.Range(0, 4), Random.Range(0, 4)));
+            m_CurrentlyUsedMusicNotes[i].Activate(new Vector2(Random.Range(-4, 4), Random.Range(-4, 4)));
         }
 
-        StaticInstanceManager.m_Instance.GetNoteChecker.GetMusicNotes(m_AllCurrentlyUsedMusicNotes, m_MiddleMusicNotesID, m_CurrnetlyUsedMiddleCheckMusicNotes);
+        StaticInstanceManager.m_Instance.GetNoteChecker.GetMusicNotes(m_CurrentlyUsedMusicNotes, m_MiddleMusicNotesID, m_CurrnetlyUsedMiddleCheckMusicNotes);
     }
 
     private void DeactivateLevel()
     {
-        for (int i = 0; i < m_AllCurrentlyUsedMusicNotes.Count; i++)
+        for (int i = 0; i < m_CurrentlyUsedMusicNotes.Count; i++)
         {
-            m_AllCurrentlyUsedMusicNotes[i].Deactivate();
-            m_AllCurrentlyUsedMusicNotes.Clear();
+            m_CurrentlyUsedMusicNotes[i].Deactivate();
+            m_CurrentlyUsedMusicNotes.Clear();
         }
     }
 
     private void LoadMiddleMusicNotes()
+    {
+        List<MiddleMusicNote> middleCheckNotes = new List<MiddleMusicNote>();
+
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject gameObjectNote = Instantiate(Resources.Load<GameObject>("Perfabs/MiddleMusicNote"));
+            gameObjectNote.SetActive(false);
+            gameObjectNote.layer = 9;
+
+            middleCheckNotes.Add(gameObjectNote.GetComponent<MiddleMusicNote>());
+        }
+        m_MiddleCheckMusicNotes.Add(middleCheckNotes);
+    }
+
+    private void LoadSongMusicNotes()
     {
         Object[] loadedMiddleNotes = new Object[4];
 
@@ -94,11 +107,23 @@ public class NoteSpawner : MonoBehaviour
         }
     }
 
-    private void PrepareMiddleNotes()
+    private void PrepareMiddleMusicNote()
+    {
+        List<MiddleMusicNote> middleMusicNotes = new List<MiddleMusicNote>();
+
+        for (int i = 0; i < m_MiddleCheckMusicNotes.Count; i++)
+        {
+            //m_MiddleMusicNotes[i].Setup(new Vector2(-5f + 2f * (i + 1f), 0f), m_MiddleMusicNotes[i].GetComponent<SpriteRenderer>().sprite, m_MiddleMusicNotes[i].GetID());
+            middleMusicNotes[i].name = "MiddleNote " + i;
+            m_CurrnetlyUsedMiddleCheckMusicNotes.Add(middleMusicNotes[i]);
+        }
+    }
+
+    private void PrepareSongNotes()
     {
         int randomIndex = Random.Range(0, m_AllSongs.Count);
         List<Node> musicNotes = m_AllSongs[randomIndex];
-        List<MiddleMusicNote> middleMusicNotes = m_MiddleCheckMusicNotes[randomIndex];
+
 
 
         for (int i = 0; i < musicNotes.Count; i++)
@@ -109,11 +134,9 @@ public class NoteSpawner : MonoBehaviour
 
             Node musicNote = musicNotes[i];
             musicNote.Setup(Vector2.zero, id);
-            m_AllCurrentlyUsedMusicNotes.Add(musicNote);
+            m_CurrentlyUsedMusicNotes.Add(musicNote);
 
-            middleMusicNotes[i].name = "MiddleNote " + i;
-            middleMusicNotes[i].Setup(new Vector2(-5f + 2f * (i + 1f), 0f), id);
-            m_CurrnetlyUsedMiddleCheckMusicNotes.Add(middleMusicNotes[i]);
+
         }
     }
 
@@ -125,7 +148,7 @@ public class NoteSpawner : MonoBehaviour
 
             Node musicNote = m_DecoyMusicNotes[i];
             musicNote.Setup(Vector2.zero, id);
-            m_AllCurrentlyUsedMusicNotes.Add(musicNote);
+            m_CurrentlyUsedMusicNotes.Add(musicNote);
         }
     }
 
@@ -136,24 +159,10 @@ public class NoteSpawner : MonoBehaviour
         for (int i = 0; i < loadedMiddleNotes.Length; i++)
         {
             GameObject gameObjectNote = Instantiate((GameObject)loadedMiddleNotes[i]);
-
+            gameObjectNote.SetActive(false);
+            gameObjectNote.layer = 10;
             middleNotes.Add(gameObjectNote.GetComponent<Node>());
-            gameObjectNote.SetActive(false);
         }
-
-        List<MiddleMusicNote> middleCheckNotes = new List<MiddleMusicNote>();
-
-        for (int i = 0; i < loadedMiddleNotes.Length; i++)
-        {
-            GameObject gameObjectNote = Instantiate((GameObject)loadedMiddleNotes[i]);
-            Destroy(gameObjectNote.GetComponent<Node>());
-            gameObjectNote.AddComponent(typeof(MiddleMusicNote));
-            gameObjectNote.SetActive(false);
-
-            middleCheckNotes.Add(gameObjectNote.GetComponent<MiddleMusicNote>());
-            gameObjectNote.SetActive(false);
-        }
-        m_MiddleCheckMusicNotes.Add(middleCheckNotes);
         m_AllSongs.Add(middleNotes);
     }
 }
