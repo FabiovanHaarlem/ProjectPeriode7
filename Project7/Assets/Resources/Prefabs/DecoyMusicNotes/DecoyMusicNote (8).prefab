@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33877121697542894}
   - component: {fileID: 65673509083361318}
   - component: {fileID: 23551749337949846}
-  - component: {fileID: 114568270341576092}
+  - component: {fileID: 114172871248017428}
   m_Layer: 0
   m_Name: DecoyMusicNote (8)
   m_TagString: Untagged
@@ -96,7 +96,7 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &114568270341576092
+--- !u!114 &114172871248017428
 MonoBehaviour:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -104,7 +104,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1384741400603032}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fbcd6aab856708b459e95a6876711e1f, type: 3}
+  m_Script: {fileID: 11500000, guid: 97f85c8e8b39bb649a4f87441c071460, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Speed: 1
+  m_RandomDir: 0
+  m_LastDir: 0
   m_SongIndex: 0
