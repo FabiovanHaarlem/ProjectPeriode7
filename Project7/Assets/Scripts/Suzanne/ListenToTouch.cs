@@ -23,9 +23,11 @@ public class ListenToTouch : MonoBehaviour {
                 {
                     //StaticInstanceManager.m_Instance.GetNoteChecker(this);
                     //multiple input.
-                    Instantiate(s_Player, s_Startpos);
+                    //Instantiate(s_Player, s_Startpos);
+
                 }
             }
         }
 	}
+    
 }
