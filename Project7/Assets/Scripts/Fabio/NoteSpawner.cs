@@ -9,8 +9,8 @@ public class NoteSpawner : MonoBehaviour
     private List<NoteDecoy> m_DecoyMusicNotes;
 
     private List<List<NoteDecoy>> m_AllSongs;
-    private List<List<GameObject>> m_MiddleCheckMusicNotes;
-    private List<GameObject> m_CurrnetlyUsedMiddleCheckMusicNotes;
+    private List<List<MiddleMusicNote>> m_MiddleCheckMusicNotes;
+    private List<MiddleMusicNote> m_CurrnetlyUsedMiddleCheckMusicNotes;
 
     private List<int> m_MiddleMusicNotesID;
 
@@ -19,9 +19,11 @@ public class NoteSpawner : MonoBehaviour
         m_AllSongs = new List<List<NoteDecoy>>();
         m_AllCurrentlyUsedMusicNotes = new List<NoteDecoy>();
 
-        m_MiddleCheckMusicNotes = new List<List<GameObject>>();
+        m_MiddleCheckMusicNotes = new List<List<MiddleMusicNote>>();
         m_MiddleMusicNotes = new List<NoteDecoy>();
         m_DecoyMusicNotes = new List<NoteDecoy>();
+
+        m_CurrnetlyUsedMiddleCheckMusicNotes = new List<MiddleMusicNote>();
 
         m_MiddleMusicNotesID = new List<int>();
 
@@ -96,11 +98,12 @@ public class NoteSpawner : MonoBehaviour
     {
         int randomIndex = Random.Range(0, m_AllSongs.Count);
         List<NoteDecoy> musicNotes = m_AllSongs[randomIndex];
-        List<GameObject> middleMusicNotes = m_MiddleCheckMusicNotes[randomIndex];
+        List<MiddleMusicNote> middleMusicNotes = m_MiddleCheckMusicNotes[randomIndex];
 
         for (int i = 0; i < middleMusicNotes.Count; i++)
         {
-            //SetMiddleNotes
+            middleMusicNotes[i].name = "MiddleNote " + i;
+            middleMusicNotes[i].Setup(new Vector2(-5f + 2f * (i + 1f), 0f));
             m_CurrnetlyUsedMiddleCheckMusicNotes.Add(middleMusicNotes[i]);
         }
 
@@ -140,15 +143,16 @@ public class NoteSpawner : MonoBehaviour
             gameObjectNote.SetActive(false);
         }
 
-        List<GameObject> middleCheckNotes = new List<GameObject>();
+        List<MiddleMusicNote> middleCheckNotes = new List<MiddleMusicNote>();
 
         for (int i = 0; i < loadedMiddleNotes.Length; i++)
         {
             GameObject gameObjectNote = Instantiate((GameObject)loadedMiddleNotes[i]);
             Destroy(gameObjectNote.GetComponent<NoteDecoy>());
-            //gameObjectNote.AddComponent(MiddleNote);
+            gameObjectNote.AddComponent(typeof(MiddleMusicNote));
+            gameObjectNote.SetActive(false);
 
-            middleCheckNotes.Add(gameObjectNote);
+            middleCheckNotes.Add(gameObjectNote.GetComponent<MiddleMusicNote>());
             gameObjectNote.SetActive(false);
         }
         m_MiddleCheckMusicNotes.Add(middleCheckNotes);
