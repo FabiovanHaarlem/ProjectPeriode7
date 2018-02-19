@@ -8,7 +8,7 @@ public class NoteDecoy : MonoBehaviour
     [SerializeField]
     private int m_SongIndex;
 
-    public void Setup(Vector2 startPosition, int iD)
+    public void Setup(int iD)
     {
         m_ID = iD;
     }

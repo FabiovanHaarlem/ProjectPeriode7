@@ -114,7 +114,7 @@ public class NoteSpawner : MonoBehaviour
             m_MiddleMusicNotesID.Add(id);
 
             NoteDecoy musicNote = musicNotes[i];
-            musicNote.Setup(Vector2.zero, id);
+            musicNote.Setup(id);
             m_AllCurrentlyUsedMusicNotes.Add(musicNote);
         }
     }
@@ -126,7 +126,7 @@ public class NoteSpawner : MonoBehaviour
             int id = 0;
 
             NoteDecoy musicNote = m_DecoyMusicNotes[i];
-            musicNote.Setup(Vector2.zero, id);
+            musicNote.Setup(id);
             m_AllCurrentlyUsedMusicNotes.Add(musicNote);
         }
     }
