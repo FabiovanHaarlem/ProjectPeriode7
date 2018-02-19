@@ -5,14 +5,8 @@ using UnityEngine;
 public class ListenToTouch : MonoBehaviour {
 
     public Touch[] m_Touches;
-    [SerializeField] private GameObject s_Player;
     [SerializeField] private List<Renderer> s_Node = new List<Renderer>();
-    [SerializeField] private Transform s_Startpos;
-	void Start ()
-    {
-        
-	}
-	
+
 	void Update ()
     {
 
@@ -31,6 +25,7 @@ public class ListenToTouch : MonoBehaviour {
                     
                     if (Physics.Raycast(ray, out hit))
                     {
+                        //input when touched
                         Destroy(hit.transform.gameObject);
                     }
                     
