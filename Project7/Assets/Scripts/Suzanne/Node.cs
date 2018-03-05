@@ -8,6 +8,7 @@ public class Node : MonoBehaviour {
     [SerializeField] private float m_Speed = 1f;
     [SerializeField] private int m_RandomDir;
     [SerializeField] private int m_LastDir;
+    public bool s_IfNotPressed = true;
 
     private SpriteRenderer m_SpriteRenderer;
 
@@ -15,6 +16,9 @@ public class Node : MonoBehaviour {
     private int m_ID;
     [SerializeField]
     private int m_SongIndex;
+
+    [SerializeField] private ParticleSystem s_Particle;
+    [SerializeField] private GameObject s_Middle;
 
     private void Awake()
     {
@@ -29,25 +33,28 @@ public class Node : MonoBehaviour {
 	
 	void FixedUpdate ()
     {
-        //random direction
-        switch (m_RandomDir)
+        if (s_IfNotPressed)
         {
-            case 1:
-                //down
-                this.transform.Translate(new Vector3(1 * m_Speed * Time.deltaTime, -1 * m_Speed * Time.deltaTime));
-                break;
-            case 2:
-                //up
-                this.transform.Translate(new Vector3(-1 * m_Speed * Time.deltaTime, 1 * m_Speed * Time.deltaTime));
-                break;
-            case 3:
-                //right
-                this.transform.Translate(new Vector3(1 * m_Speed * Time.deltaTime, 1 * m_Speed * Time.deltaTime));
-                break;
-            case 4:
-                //left
-                this.transform.Translate(new Vector3(-1 * m_Speed * Time.deltaTime, -1 * m_Speed * Time.deltaTime));
-                break;
+            //random direction
+            switch (m_RandomDir)
+            {
+                case 1:
+                    //down
+                    this.transform.Translate(new Vector3(1 * m_Speed * Time.deltaTime, -1 * m_Speed * Time.deltaTime));
+                    break;
+                case 2:
+                    //up
+                    this.transform.Translate(new Vector3(-1 * m_Speed * Time.deltaTime, 1 * m_Speed * Time.deltaTime));
+                    break;
+                case 3:
+                    //right
+                    this.transform.Translate(new Vector3(1 * m_Speed * Time.deltaTime, 1 * m_Speed * Time.deltaTime));
+                    break;
+                case 4:
+                    //left
+                    this.transform.Translate(new Vector3(-1 * m_Speed * Time.deltaTime, -1 * m_Speed * Time.deltaTime));
+                    break;
+            }
         }
     }
     private void OnCollisionEnter(Collision collision)
@@ -97,12 +104,25 @@ public class Node : MonoBehaviour {
     public void IsMiddleMusicNote()
     {
         //checks if is same ad middle node
-        Deactivate();
+        this.transform.position = new Vector2(s_Middle.transform.position.x, s_Middle.transform.position.y);
+        s_Particle.transform.position = this.transform.position;
+        StartCoroutine(Particle());
+        //StartCoroutine(DeactivateNode());
     }
 
     public void IsNotMiddleMusicNote()
     {
         //checks if is nor same as middle note
+        StartCoroutine(DeactivateNode());
+    }
+    IEnumerator Particle()
+    {
+        yield return new WaitForSeconds(2);
+        s_Particle.Play();
+    }
+    IEnumerator DeactivateNode()
+    {
+        yield return new WaitForSeconds(4);
         Deactivate();
     }
 }
