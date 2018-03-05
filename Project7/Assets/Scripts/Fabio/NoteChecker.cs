@@ -6,14 +6,12 @@ public class NoteChecker : MonoBehaviour
 {
     private List<Node> m_MusicNotes;
 
-    private List<int> m_MiddleMusicNotesID;
-
     private List<MiddleMusicNote> m_MiddleMusicNotes;
 
-    public void GetMusicNotes(List<Node> musicNotes, List<int> musicNotesID, List<MiddleMusicNote> middleMusicNotes)
+    public void GetMusicNotes(List<Node> musicNotes, List<MiddleMusicNote> middleMusicNotes)
     {
         m_MusicNotes = musicNotes;
-        m_MiddleMusicNotesID = musicNotesID;
+        m_MiddleMusicNotes = middleMusicNotes;
     }
 
     public void CheckIfMiddleNote(GameObject selectedMusicNote)
@@ -29,12 +27,14 @@ public class NoteChecker : MonoBehaviour
             }
         }
 
-        for (int i = 0; i < m_MiddleMusicNotesID.Count; i++)
+        for (int i = 0; i < m_MiddleMusicNotes.Count; i++)
         {
-            if (m_MiddleMusicNotesID[i] == musicNote.GetID())
+            if (m_MiddleMusicNotes[i].GetID() == musicNote.GetID())
             {
                 musicNote.IsMiddleMusicNote();
                 musicNote = null;
+                StartCoroutine(StaticInstanceManager.m_Instance.GetSongManager.PlaySongFragment());
+
                 break;
             }
         }

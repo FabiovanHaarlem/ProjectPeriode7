@@ -4,24 +4,22 @@ using UnityEngine;
 
 public class NoteSpawner : MonoBehaviour
 {
-    private List<Node> m_CurrentlyUsedMusicNotes;
+    private List<Sprite> m_LoadedSprites;
+    private List<Sprite> m_UsedSprites;
+    private List<Node> m_MusicNotes;
     private List<Node> m_DecoyMusicNotes;
-
-    private List<List<Node>> m_AllSongs;
     private List<MiddleMusicNote> m_MiddleMusicNotes;
-
-    private List<int> m_MiddleMusicNotesID;
+    private List<Node> m_AllMusicNotes;
 
     void Start ()
     {
-        m_AllSongs = new List<List<Node>>();
-        m_CurrentlyUsedMusicNotes = new List<Node>();
-
-        m_DecoyMusicNotes = new List<Node>();
-
         m_MiddleMusicNotes = new List<MiddleMusicNote>();
 
-        m_MiddleMusicNotesID = new List<int>();
+        m_LoadedSprites = new List<Sprite>();
+        m_MusicNotes = new List<Node>();
+        m_DecoyMusicNotes = new List<Node>();
+        m_UsedSprites = new List<Sprite>();
+        m_AllMusicNotes = new List<Node>();
 
         SetupGame();
         StartLevel();
@@ -29,137 +27,234 @@ public class NoteSpawner : MonoBehaviour
 
     private void SetupGame()
     {
-        LoadSongMusicNotes();
-        LoadDecoyMusicNotes();
-        LoadMiddleMusicNotes();
+        LoadAllSprites();
+        CreateDecoyMusicNotes();
+        CreateMusicNotes();
+        CreateMiddleMusicNotes();
     }
 
     private void SetupLevel()
     {
-        PrepareSongNotes();
+        m_UsedSprites = m_LoadedSprites;
         PrepareDecoyMusicNotes();
-        PrepareMiddleMusicNote();
-    }
+        PrepareMusicNotes();
+        PrepareMiddleMusicNotes();
+        m_AllMusicNotes = m_DecoyMusicNotes;
 
-    private void StartLevel()
-    {
-        SetupLevel();
-
-        for (int i = 0; i < m_CurrentlyUsedMusicNotes.Count; i++)
+        for (int i = 0; i < m_MusicNotes.Count; i++)
         {
-            m_CurrentlyUsedMusicNotes[i].Activate(new Vector2(Random.Range(-4, 4), Random.Range(-4, 4)));
+            m_AllMusicNotes.Add(m_MusicNotes[i]);
         }
 
-        StaticInstanceManager.m_Instance.GetNoteChecker.GetMusicNotes(m_CurrentlyUsedMusicNotes, m_MiddleMusicNotesID, m_MiddleMusicNotes);
+        StaticInstanceManager.m_Instance.GetNoteChecker.GetMusicNotes(m_AllMusicNotes, m_MiddleMusicNotes);
     }
 
-    private void DeactivateLevel()
+    private void LoadAllSprites()
     {
-        for (int i = 0; i < m_CurrentlyUsedMusicNotes.Count; i++)
+        Object[] sprites = Resources.LoadAll("Sprites", typeof(Sprite));
+
+        for (int i = 0; i < sprites.Length; i++)
         {
-            m_CurrentlyUsedMusicNotes[i].Deactivate();
-            m_CurrentlyUsedMusicNotes.Clear();
+            m_LoadedSprites.Add((Sprite)sprites[i]);
+        }
+
+        m_UsedSprites = m_LoadedSprites;
+    }
+
+    private void CreateDecoyMusicNotes()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            GameObject gameObjectNote = Instantiate(Resources.Load<GameObject>("Prefabs/MusicNote"));
+            gameObjectNote.name = "DecoyMusicNote" + i;
+            Node musicNote = gameObjectNote.GetComponent<Node>();
+            musicNote.Setup(Vector2.zero, 0);
+            m_DecoyMusicNotes.Add(musicNote);
         }
     }
 
-    private void LoadMiddleMusicNotes()
+    private void CreateMusicNotes()
     {
-        List<MiddleMusicNote> middleCheckNotes = new List<MiddleMusicNote>();
+        for (int i = 0; i < 4; i++)
+        {
+            GameObject gameObjectNote = Instantiate(Resources.Load<GameObject>("Prefabs/MusicNote"));
+            gameObjectNote.name = "MusicNote" + i;
+            Node musicNote = gameObjectNote.GetComponent<Node>();
+            musicNote.Setup(Vector2.zero, (i + 1));
+            m_MusicNotes.Add(musicNote);
+        }
+    }
 
+    private void CreateMiddleMusicNotes()
+    {
         for (int i = 0; i < 4; i++)
         {
             GameObject gameObjectNote = Instantiate(Resources.Load<GameObject>("Prefabs/MiddleMusicNote"));
-            gameObjectNote.SetActive(false);
-            gameObjectNote.layer = 9;
-
-            middleCheckNotes.Add(gameObjectNote.GetComponent<MiddleMusicNote>());
-        }
-        m_MiddleMusicNotes =middleCheckNotes;
-    }
-
-    private void LoadSongMusicNotes()
-    {
-        Object[] loadedMiddleNotes = new Object[4];
-
-
-        loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song0");
-        LoadFromFolder(loadedMiddleNotes);
-
-        loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song1");
-        LoadFromFolder(loadedMiddleNotes);
-
-        loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song2");
-        LoadFromFolder(loadedMiddleNotes);
-
-        loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song3");
-        LoadFromFolder(loadedMiddleNotes);
-    }
-
-    private void LoadDecoyMusicNotes()
-    {
-        Object[] loadedDecoyMusicNotes = Resources.LoadAll("Prefabs/DecoyMusicNotes");
-
-        for (int i = 0; i < loadedDecoyMusicNotes.Length; i++)
-        {
-            GameObject gameObject = Instantiate((GameObject)loadedDecoyMusicNotes[i]);
-            m_DecoyMusicNotes.Add(gameObject.GetComponent<Node>());
-            gameObject.SetActive(false);
+            gameObjectNote.name = "MiddleMusicNote" + i;
+            MiddleMusicNote middleMusicNote = gameObjectNote.GetComponent<MiddleMusicNote>();
+            m_MiddleMusicNotes.Add(middleMusicNote);
         }
     }
 
-    private void PrepareMiddleMusicNote()
+    private void PrepareMusicNotes()
     {
-        for (int i = 0; i < m_MiddleMusicNotes.Count; i++)
+        for (int i = 0; i < m_MusicNotes.Count; i++)
         {
-            m_MiddleMusicNotes[i].Setup(new Vector2(-5f + 2f * (i + 1f), 0f), m_CurrentlyUsedMusicNotes[i].GetComponent<SpriteRenderer>().sprite, m_CurrentlyUsedMusicNotes[i].GetID());
-            m_MiddleMusicNotes[i].name = "MiddleNote " + i;
-        }
-    }
+            int randomIndex = Random.Range(0, m_UsedSprites.Count);
+            Sprite sprite = m_UsedSprites[randomIndex];
+            m_UsedSprites.RemoveAt(randomIndex);
 
-    private void PrepareSongNotes()
-    {
-        int randomIndex = Random.Range(0, m_AllSongs.Count);
-        List<Node> musicNotes = m_AllSongs[randomIndex];
-
-
-
-        for (int i = 0; i < musicNotes.Count; i++)
-        {
-            int id = i + 1;
-
-            m_MiddleMusicNotesID.Add(id);
-
-            Node musicNote = musicNotes[i];
-            musicNote.Setup(Vector2.zero, id);
-            m_CurrentlyUsedMusicNotes.Add(musicNote);
-
-
+            m_MusicNotes[i].Setup(Vector2.zero, (i + 1));
+            m_MusicNotes[i].Activate(new Vector2(Random.Range(-4, 4), Random.Range(-4, 4)), sprite);
         }
     }
 
     private void PrepareDecoyMusicNotes()
     {
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < m_DecoyMusicNotes.Count; i++)
         {
-            int id = 0;
+            int randomIndex = Random.Range(0, m_UsedSprites.Count);
+            Sprite sprite = m_UsedSprites[randomIndex];
+            m_UsedSprites.RemoveAt(randomIndex);
 
-            Node musicNote = m_DecoyMusicNotes[i];
-            musicNote.Setup(Vector2.zero, id);
-            m_CurrentlyUsedMusicNotes.Add(musicNote);
+            m_DecoyMusicNotes[i].Setup(Vector2.zero, 0);
+            m_DecoyMusicNotes[i].Activate(new Vector2(Random.Range(-4, 4), Random.Range(-4, 4)), sprite);
         }
     }
 
-    private void LoadFromFolder(Object[] loadedMiddleNotes)
+    private void PrepareMiddleMusicNotes()
     {
-        List<Node> middleNotes = new List<Node>();
-
-        for (int i = 0; i < loadedMiddleNotes.Length; i++)
+        for (int i = 0; i < m_MiddleMusicNotes.Count; i++)
         {
-            GameObject gameObjectNote = Instantiate((GameObject)loadedMiddleNotes[i]);
-            gameObjectNote.SetActive(false);
-            gameObjectNote.layer = 10;
-            middleNotes.Add(gameObjectNote.GetComponent<Node>());
+            m_MiddleMusicNotes[i].Setup(new Vector2(-5f + 2f * (i + 1f), 0f), m_MusicNotes[i].GetSprite(), m_MusicNotes[i].GetID());
         }
-        m_AllSongs.Add(middleNotes);
     }
+
+    public void StartLevel()
+    {
+        SetupLevel();
+    }
+
+
+    //public void StartLevel()
+    //{
+    //    SetupLevel();
+
+    //    for (int i = 0; i < m_CurrentlyUsedMusicNotes.Count; i++)
+    //    {
+    //        m_CurrentlyUsedMusicNotes[i].Activate(new Vector2(Random.Range(-4, 4), Random.Range(-4, 4)));
+    //    }
+
+    //    StaticInstanceManager.m_Instance.GetNoteChecker.GetMusicNotes(m_CurrentlyUsedMusicNotes, m_MiddleMusicNotesID, m_MiddleMusicNotes);
+    //}
+
+    //private void DeactivateLevel()
+    //{
+    //    for (int i = 0; i < m_CurrentlyUsedMusicNotes.Count; i++)
+    //    {
+    //        m_CurrentlyUsedMusicNotes[i].Deactivate();
+    //        m_CurrentlyUsedMusicNotes.Clear();
+    //    }
+    //}
+
+    //private void LoadMiddleMusicNotes()
+    //{
+    //    List<MiddleMusicNote> middleCheckNotes = new List<MiddleMusicNote>();
+
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        GameObject gameObjectNote = Instantiate(Resources.Load<GameObject>("Prefabs/MiddleMusicNote"));
+    //        gameObjectNote.SetActive(false);
+    //        gameObjectNote.layer = 9;
+
+    //        middleCheckNotes.Add(gameObjectNote.GetComponent<MiddleMusicNote>());
+    //    }
+    //    m_MiddleMusicNotes =middleCheckNotes;
+    //}
+
+    //private void LoadSongMusicNotes()
+    //{
+    //    Object[] loadedMiddleNotes = new Object[4];
+
+
+    //    loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song0");
+    //    LoadFromFolder(loadedMiddleNotes);
+
+    //    loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song1");
+    //    LoadFromFolder(loadedMiddleNotes);
+
+    //    loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song2");
+    //    LoadFromFolder(loadedMiddleNotes);
+
+    //    loadedMiddleNotes = Resources.LoadAll("Prefabs/Songs/Song3");
+    //    LoadFromFolder(loadedMiddleNotes);
+    //}
+
+    //private void LoadDecoyMusicNotes()
+    //{
+    //    Object[] loadedDecoyMusicNotes = Resources.LoadAll("Prefabs/DecoyMusicNotes");
+
+    //    for (int i = 0; i < loadedDecoyMusicNotes.Length; i++)
+    //    {
+    //        GameObject gameObject = Instantiate((GameObject)loadedDecoyMusicNotes[i]);
+    //        //m_DecoyMusicNotes.Add(gameObject.GetComponent<Node>());
+    //        gameObject.SetActive(false);
+    //    }
+    //}
+
+    //private void PrepareMiddleMusicNote()
+    //{
+    //    for (int i = 0; i < m_MiddleMusicNotes.Count; i++)
+    //    {
+    //        m_MiddleMusicNotes[i].Setup(new Vector2(-5f + 2f * (i + 1f), 0f), m_CurrentlyUsedMusicNotes[i].GetComponent<SpriteRenderer>().sprite, m_CurrentlyUsedMusicNotes[i].GetID());
+    //        m_MiddleMusicNotes[i].name = "MiddleNote " + i;
+    //    }
+    //}
+
+    //private void PrepareSongNotes()
+    //{
+    //    int randomIndex = Random.Range(0, m_AllSongs.Count);
+    //    List<Node> musicNotes = m_AllSongs[randomIndex];
+
+
+
+    //    for (int i = 0; i < musicNotes.Count; i++)
+    //    {
+    //        int id = i + 1;
+
+    //        m_MiddleMusicNotesID.Add(id);
+
+    //        Node musicNote = musicNotes[i];
+    //        musicNote.Setup(Vector2.zero, id);
+    //        m_CurrentlyUsedMusicNotes.Add(musicNote);
+
+
+    //    }
+    //}
+
+    //private void PrepareDecoyMusicNotes()
+    //{
+    //    for (int i = 0; i < 10; i++)
+    //    {
+    //        int id = 0;
+
+    //        //Node musicNote = m_DecoyMusicNotes[i];
+    //        //musicNote.Setup(Vector2.zero, id);
+    //        //m_CurrentlyUsedMusicNotes.Add(musicNote);
+    //    }
+    //}
+
+    //private void LoadFromFolder(Object[] loadedMiddleNotes)
+    //{
+    //    List<Node> middleNotes = new List<Node>();
+
+    //    for (int i = 0; i < loadedMiddleNotes.Length; i++)
+    //    {
+    //        GameObject gameObjectNote = Instantiate((GameObject)loadedMiddleNotes[i]);
+    //        gameObjectNote.SetActive(false);
+    //        gameObjectNote.layer = 10;
+    //        middleNotes.Add(gameObjectNote.GetComponent<Node>());
+    //    }
+    //    m_AllSongs.Add(middleNotes);
+    //}
 }
