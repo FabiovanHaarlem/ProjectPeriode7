@@ -9,11 +9,12 @@ public class MiddleMusicNote : MonoBehaviour
 
     private void Start()
     {
-        m_SpriteRenderer = GetComponent<SpriteRenderer>();
+        
     }
 
     public void Setup(Vector2 position, Sprite sprite, int id)
     {
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
         transform.position = position;
         gameObject.SetActive(true);
         m_ID = id;
