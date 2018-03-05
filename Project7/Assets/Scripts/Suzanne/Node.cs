@@ -9,14 +9,22 @@ public class Node : MonoBehaviour {
     [SerializeField] private int m_RandomDir;
     [SerializeField] private int m_LastDir;
 
+    private SpriteRenderer m_SpriteRenderer;
+
     //id and song
     private int m_ID;
     [SerializeField]
     private int m_SongIndex;
 
+    private void Awake()
+    {
+        m_SpriteRenderer = GetComponent<SpriteRenderer>();
+    }
+
     void Start ()
     {
         m_RandomDir = Random.Range(1, 5);
+
 	}
 	
 	void FixedUpdate ()
@@ -61,9 +69,10 @@ public class Node : MonoBehaviour {
         m_ID = iD;
     }
 
-    public void Activate(Vector2 startPosition)
+    public void Activate(Vector2 startPosition, Sprite sprite)
     {
         //set gameobject active
+        m_SpriteRenderer.sprite = sprite;
         transform.position = startPosition;
         gameObject.SetActive(true);
     }
@@ -72,6 +81,11 @@ public class Node : MonoBehaviour {
     {
         //set gameobject deactive
         gameObject.SetActive(false);
+    }
+
+    public Sprite GetSprite()
+    {
+        return m_SpriteRenderer.sprite;
     }
 
     public int GetID()
