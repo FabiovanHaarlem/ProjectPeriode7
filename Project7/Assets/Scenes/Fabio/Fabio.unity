@@ -202,6 +202,48 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1001 &1048172243
+Prefab:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_LocalPosition.x
+      value: -466.11
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: -221.15
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4456490706307284, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+      propertyPath: m_RootOrder
+      value: 4
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_ParentPrefab: {fileID: 100100000, guid: 7d2e4ebf08f60ab4da6370d9fb1917d1, type: 2}
+  m_IsPrefabParent: 0
 --- !u!1 &1174311736
 GameObject:
   m_ObjectHideFlags: 0
@@ -216,6 +258,7 @@ GameObject:
   - component: {fileID: 1174311742}
   - component: {fileID: 1174311741}
   - component: {fileID: 1174311743}
+  - component: {fileID: 1174311744}
   m_Layer: 0
   m_Name: _System
   m_TagString: Untagged
@@ -372,6 +415,18 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 0
+--- !u!114 &1174311744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1174311736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f48179342bf6be14da7fcafc5fbc4c51, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  s_Node: {fileID: 1174311740}
 --- !u!1 &1308782511
 GameObject:
   m_ObjectHideFlags: 0
