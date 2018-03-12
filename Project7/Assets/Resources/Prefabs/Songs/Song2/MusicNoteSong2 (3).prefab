@@ -19,10 +19,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4112985043048304}
-  - component: {fileID: 65422658618533730}
   - component: {fileID: 212485203702208810}
   - component: {fileID: 114975489676706198}
   - component: {fileID: 54150064181150136}
+  - component: {fileID: 135708810926024806}
   m_Layer: 10
   m_Name: MusicNoteSong2 (3)
   m_TagString: Untagged
@@ -58,18 +58,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 1
---- !u!65 &65422658618533730
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1212868779412768}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114975489676706198
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -84,7 +72,20 @@ MonoBehaviour:
   m_Speed: 1
   m_RandomDir: 0
   m_LastDir: 0
+  s_IfNotPressed: 1
   m_SongIndex: 4
+--- !u!135 &135708810926024806
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1212868779412768}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.57375
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!212 &212485203702208810
 SpriteRenderer:
   m_ObjectHideFlags: 1

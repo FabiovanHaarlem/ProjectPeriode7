@@ -20,10 +20,10 @@ GameObject:
   m_Component:
   - component: {fileID: 4715810680217602}
   - component: {fileID: 33781319873486456}
-  - component: {fileID: 65100182991342878}
   - component: {fileID: 23172454751751804}
   - component: {fileID: 114173082129607350}
   - component: {fileID: 54585361112996350}
+  - component: {fileID: 135695054415327296}
   m_Layer: 10
   m_Name: DecoyMusicNote (2)
   m_TagString: Untagged
@@ -100,18 +100,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 120
   m_CollisionDetection: 1
---- !u!65 &65100182991342878
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1459981090234982}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &114173082129607350
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -126,4 +114,17 @@ MonoBehaviour:
   m_Speed: 1
   m_RandomDir: 0
   m_LastDir: 0
+  s_IfNotPressed: 1
   m_SongIndex: 0
+--- !u!135 &135695054415327296
+SphereCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1459981090234982}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.5
+  m_Center: {x: 0, y: 0, z: 0}

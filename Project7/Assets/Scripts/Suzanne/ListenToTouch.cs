@@ -6,7 +6,8 @@ public class ListenToTouch : MonoBehaviour {
 
     public Touch[] m_Touches;
   // [SerializeField] private List<Node> s_Node = new List<Node>();
-     [SerializeField]private Node s_Node;
+     [SerializeField]private NoteChecker s_Node;
+     public RaycastHit hit;
     void Update ()
     {
 
@@ -19,14 +20,14 @@ public class ListenToTouch : MonoBehaviour {
                 {
                     //multiple input.
                     Ray ray = Camera.main.ScreenPointToRay(new Vector3(m_Touches[i].position.x, m_Touches[i].position.y));
-                    RaycastHit hit;
-                    
+                            
                     if (Physics.Raycast(ray, out hit))
                     {
                         Debug.Log(hit.transform.gameObject);
                         //input when touched
-                        //StaticInstanceManager.m_Instance.GetNoteChecker.CheckIfMiddleNote(this.gameObject);
-                        s_Node.s_IfNotPressed = false;
+
+                        StaticInstanceManager.m_Instance.GetNoteChecker.CheckIfMiddleNote(hit.transform.gameObject);
+                        //s_Node.CheckIfMiddleNote(hit.transform.gameObject);
                     }
                 }
             }

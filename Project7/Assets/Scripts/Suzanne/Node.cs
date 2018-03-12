@@ -17,9 +17,7 @@ public class Node : MonoBehaviour {
     [SerializeField]
     private int m_SongIndex;
 
-    [SerializeField] private ParticleSystem s_Particle;
-    [SerializeField] private GameObject s_Middle;
-
+    private ParticleSystem s_Particle;
     private void Awake()
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -28,7 +26,8 @@ public class Node : MonoBehaviour {
     void Start ()
     {
         m_RandomDir = Random.Range(1, 5);
-
+        s_Particle = (ParticleSystem)FindObjectOfType(typeof(ParticleSystem));
+        
 	}
 	
 	void FixedUpdate ()
@@ -103,11 +102,10 @@ public class Node : MonoBehaviour {
 
     public void IsMiddleMusicNote()
     {
-        //checks if is same ad middle node
-        this.transform.position = new Vector2(s_Middle.transform.position.x, s_Middle.transform.position.y);
+        ////checks if is same ad middle node
         s_Particle.transform.position = this.transform.position;
         StartCoroutine(Particle());
-        //StartCoroutine(DeactivateNode());
+        StartCoroutine(DeactivateNode());
     }
 
     public void IsNotMiddleMusicNote()
@@ -117,12 +115,12 @@ public class Node : MonoBehaviour {
     }
     IEnumerator Particle()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(0);
         s_Particle.Play();
     }
     IEnumerator DeactivateNode()
     {
-        yield return new WaitForSeconds(4);
+        yield return new WaitForSeconds(0.5f);
         Deactivate();
     }
 }

@@ -28,7 +28,7 @@ public class SongManager : MonoBehaviour
         m_SongFragments = new List<List<AudioClip>>();
         m_AudioSource = GetComponent<AudioSource>();
         m_SongPart = 0;
-        m_WholeSongIndex = 12;
+        m_WholeSongIndex = 0;
         m_RemoveDelay = 0.08f;
         //LoadSongs();
         LoadSongFragments();
