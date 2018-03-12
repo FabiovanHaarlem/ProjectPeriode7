@@ -10,26 +10,32 @@ public class SongManager : MonoBehaviour
 
     //private AudioClip m_ActiveSong;
     private List<AudioClip> m_ActiveSongFragments;
+    private AudioClip m_ActiveSongFragment;
 
     private AudioSource m_AudioSource;
 
     private int m_SongIndex;
     private int m_FragmentIndex;
     private int m_SongPart;
+    private float m_RemoveDelay;
 
     private int m_WholeSongIndex;
-	
-	void Start ()
+
+    void Start ()
     {
         m_ActiveSongFragments = new List<AudioClip>();
         m_Songs = new List<AudioClip>();
         m_SongFragments = new List<List<AudioClip>>();
+        m_AudioSource = GetComponent<AudioSource>();
         m_SongPart = 0;
-        m_WholeSongIndex = 0;
-        LoadSongs();
+        m_WholeSongIndex = 12;
+        m_RemoveDelay = 0.08f;
+        //LoadSongs();
         LoadSongFragments();
-        SelectNextSongFragment();
-	}
+        SetActiveFragments();
+        //StartCoroutine(PlaySong());
+
+    }
 
     private void LoadSongs()
     {
@@ -58,21 +64,18 @@ public class SongManager : MonoBehaviour
                 index += 1;
             }
             m_SongFragments.Add(audioClips);
-            audioClips.Clear();
         }
     }
 
-    public void SelectNextSongFragment()
+    private void SetActiveFragments()
     {
-        m_SongPart = 0;
-        m_ActiveSongFragments = m_SongFragments[m_SongPart];
-        m_SongPart++;
+        m_ActiveSongFragments = m_SongFragments[m_WholeSongIndex];
     }
 
-    public void NextSongPart()
+    private void NextSongPart()
     {
         m_WholeSongIndex++;
-        m_SongPart = 0;
+        m_FragmentIndex = 0;
         m_ActiveSongFragments = m_SongFragments[m_WholeSongIndex];
     }
 
@@ -80,14 +83,16 @@ public class SongManager : MonoBehaviour
     {
         m_AudioSource.clip = m_ActiveSongFragments[m_FragmentIndex];
         m_AudioSource.Play();
-        m_FragmentIndex++;
-        new WaitForSeconds(m_AudioSource.clip.length);
-        m_SongPart++;
-        if (m_SongPart >= 4)
+        yield return new WaitForSeconds(m_AudioSource.clip.length);
+        if (m_FragmentIndex == 3)
         {
             StartCoroutine(PlaySong());
         }
-        SelectNextSongFragment();
+        else
+        {
+            m_FragmentIndex++;
+        }
+
         yield return new WaitForSeconds(2);
     }
 
@@ -95,21 +100,39 @@ public class SongManager : MonoBehaviour
     {
         m_AudioSource.clip = m_ActiveSongFragments[0];
         m_AudioSource.Play();
-        new WaitForSeconds(m_AudioSource.clip.length);
+        yield return new WaitForSeconds(m_AudioSource.clip.length - m_RemoveDelay);
 
         m_AudioSource.clip = m_ActiveSongFragments[1];
         m_AudioSource.Play();
-        new WaitForSeconds(m_AudioSource.clip.length);
+        yield return new WaitForSeconds(m_AudioSource.clip.length - m_RemoveDelay);
+
+        m_AudioSource.clip = m_ActiveSongFragments[2];
+        m_AudioSource.Play();
+        yield return new WaitForSeconds(m_AudioSource.clip.length - m_RemoveDelay);
 
         m_AudioSource.clip = m_ActiveSongFragments[3];
         m_AudioSource.Play();
-        new WaitForSeconds(m_AudioSource.clip.length);
+        yield return new WaitForSeconds(m_AudioSource.clip.length - m_RemoveDelay);
 
-        m_AudioSource.clip = m_ActiveSongFragments[4];
-        m_AudioSource.Play();
-        new WaitForSeconds(m_AudioSource.clip.length);
+        if (m_WholeSongIndex == m_SongFragments.Count - 1)
+        {
 
-        StaticInstanceManager.m_Instance.GetGameManager.StartLevel();
+            for (int songPart = 0; songPart < m_SongFragments.Count; songPart++)
+            {
+                for (int fragment = 0; fragment < m_SongFragments[songPart].Count; fragment++)
+                {
+                    m_AudioSource.clip = m_SongFragments[songPart][fragment];
+                    m_AudioSource.Play();
+                    yield return new WaitForSeconds(m_AudioSource.clip.length - m_RemoveDelay);
+                }
+            }
+        }
+        else
+        {
+            StaticInstanceManager.m_Instance.GetGameManager.StartLevel();
+            NextSongPart();
+        }
+
         yield return new WaitForSeconds(2);
     }
 }

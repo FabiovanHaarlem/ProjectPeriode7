@@ -35,7 +35,7 @@ public class NoteSpawner : MonoBehaviour
 
     private void SetupLevel()
     {
-        m_UsedSprites = m_LoadedSprites;
+        m_UsedSprites = new List<Sprite>(m_LoadedSprites);
         PrepareDecoyMusicNotes();
         PrepareMusicNotes();
         PrepareMiddleMusicNotes();
@@ -58,7 +58,7 @@ public class NoteSpawner : MonoBehaviour
             m_LoadedSprites.Add((Sprite)sprites[i]);
         }
 
-        m_UsedSprites = m_LoadedSprites;
+        m_UsedSprites = new List<Sprite>(m_LoadedSprites);
     }
 
     private void CreateDecoyMusicNotes()
@@ -98,7 +98,7 @@ public class NoteSpawner : MonoBehaviour
 
     private void PrepareMusicNotes()
     {
-        for (int i = 0; i < m_MusicNotes.Count; i++)
+        for (int i = 0; i < 4; i++)
         {
             int randomIndex = Random.Range(0, m_UsedSprites.Count);
             Sprite sprite = m_UsedSprites[randomIndex];
@@ -111,7 +111,7 @@ public class NoteSpawner : MonoBehaviour
 
     private void PrepareDecoyMusicNotes()
     {
-        for (int i = 0; i < m_DecoyMusicNotes.Count; i++)
+        for (int i = 0; i < 8; i++)
         {
             int randomIndex = Random.Range(0, m_UsedSprites.Count);
             Sprite sprite = m_UsedSprites[randomIndex];
@@ -126,7 +126,7 @@ public class NoteSpawner : MonoBehaviour
     {
         for (int i = 0; i < m_MiddleMusicNotes.Count; i++)
         {
-            m_MiddleMusicNotes[i].Setup(new Vector2(-5f + 2f * (i + 1f), 0f), m_MusicNotes[i].GetSprite(), m_MusicNotes[i].GetID());
+            m_MiddleMusicNotes[i].Setup(new Vector2(-2.4f + 1.1f * (i + 1f), 0f), m_MusicNotes[i].GetSprite(), m_MusicNotes[i].GetID());
         }
     }
 
