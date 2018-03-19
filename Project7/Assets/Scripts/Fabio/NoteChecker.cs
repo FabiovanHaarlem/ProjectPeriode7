@@ -7,6 +7,7 @@ public class NoteChecker : MonoBehaviour
     private List<Node> m_MusicNotes;
 
     private List<MiddleMusicNote> m_MiddleMusicNotes;
+    public List<GameObject> s_Sprite;
 
     public void GetMusicNotes(List<Node> musicNotes, List<MiddleMusicNote> middleMusicNotes)
     {
@@ -32,11 +33,15 @@ public class NoteChecker : MonoBehaviour
             if (m_MiddleMusicNotes[i].GetID() == musicNote.GetID())
             {
                 musicNote.IsMiddleMusicNote();
+                s_Sprite[i].transform.position = new Vector3(m_MiddleMusicNotes[i].transform.position.x, m_MiddleMusicNotes[i].transform.position.y, -1);
+                
                 musicNote = null;
                 StartCoroutine(StaticInstanceManager.m_Instance.GetSongManager.PlaySongFragment());
 
                 break;
             }
+            
+
         }
 
         if (musicNote != null)

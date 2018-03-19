@@ -51,7 +51,7 @@ public class NoteSpawner : MonoBehaviour
 
     private void LoadAllSprites()
     {
-        Object[] sprites = Resources.LoadAll("Sprites", typeof(Sprite));
+        Object[] sprites = Resources.LoadAll("noten", typeof(Sprite));
 
         for (int i = 0; i < sprites.Length; i++)
         {

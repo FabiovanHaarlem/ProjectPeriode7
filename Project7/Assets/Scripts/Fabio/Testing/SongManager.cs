@@ -13,6 +13,7 @@ public class SongManager : MonoBehaviour
     private AudioClip m_ActiveSongFragment;
 
     private AudioSource m_AudioSource;
+    [SerializeField] private NoteChecker s_Node;
 
     private int m_SongIndex;
     private int m_FragmentIndex;
@@ -35,6 +36,13 @@ public class SongManager : MonoBehaviour
         SetActiveFragments();
         //StartCoroutine(PlaySong());
 
+    }
+    private void Update()
+    {
+        if(m_SongPart== 12)
+        {
+            m_SongPart = 0;
+        }
     }
 
     private void LoadSongs()
@@ -74,6 +82,11 @@ public class SongManager : MonoBehaviour
 
     private void NextSongPart()
     {
+        for (int i = 0; i < s_Node.s_Sprite.Count; i++)
+        {
+            s_Node.s_Sprite[i].transform.position = new Vector3(-3.719069f, 6.268066f, 0);
+
+        }
         m_WholeSongIndex++;
         m_FragmentIndex = 0;
         m_ActiveSongFragments = m_SongFragments[m_WholeSongIndex];

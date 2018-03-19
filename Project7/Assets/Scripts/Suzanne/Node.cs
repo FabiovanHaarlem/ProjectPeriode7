@@ -27,8 +27,9 @@ public class Node : MonoBehaviour {
     {
         m_RandomDir = Random.Range(1, 5);
         s_Particle = (ParticleSystem)FindObjectOfType(typeof(ParticleSystem));
-        
-	}
+
+
+    }
 	
 	void FixedUpdate ()
     {
