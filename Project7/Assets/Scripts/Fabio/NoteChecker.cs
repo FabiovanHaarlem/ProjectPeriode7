@@ -83,11 +83,9 @@ public class NoteChecker : MonoBehaviour
 
         Ray ray = (Camera.main.ScreenPointToRay(Input.mousePosition));
 
-        Physics.Raycast(ray, out hit, Mathf.Infinity);
-
         Debug.DrawRay(Camera.main.transform.position, ray.direction * 50, Color.red);
 
-        if (hit.collider.gameObject != null)
+        if (Physics.Raycast(ray, out hit, Mathf.Infinity))
         {
             CheckIfMiddleNote(hit.collider.gameObject);
         }
