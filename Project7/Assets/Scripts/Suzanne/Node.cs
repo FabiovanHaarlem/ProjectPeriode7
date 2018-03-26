@@ -17,7 +17,9 @@ public class Node : MonoBehaviour {
     [SerializeField]
     private int m_SongIndex;
 
-    private ParticleSystem s_Particle;
+    [SerializeField] private ParticleSystem s_Particle;
+    [SerializeField] private ParticleSystem s_BadParticle;
+
     private void Awake()
     {
         m_SpriteRenderer = GetComponent<SpriteRenderer>();
@@ -26,8 +28,6 @@ public class Node : MonoBehaviour {
     void Start ()
     {
         m_RandomDir = Random.Range(1, 5);
-        s_Particle = (ParticleSystem)FindObjectOfType(typeof(ParticleSystem));
-
 
     }
 	
@@ -112,6 +112,8 @@ public class Node : MonoBehaviour {
     public void IsNotMiddleMusicNote()
     {
         //checks if is nor same as middle note
+        s_BadParticle.transform.position = this.transform.position;
+        StartCoroutine(ParticleBad());
         StartCoroutine(DeactivateNode());
     }
     IEnumerator Particle()
@@ -123,5 +125,10 @@ public class Node : MonoBehaviour {
     {
         yield return new WaitForSeconds(0.5f);
         Deactivate();
+    }
+    IEnumerator ParticleBad()
+    {
+        yield return new WaitForSeconds(0);
+        s_BadParticle.Play();
     }
 }

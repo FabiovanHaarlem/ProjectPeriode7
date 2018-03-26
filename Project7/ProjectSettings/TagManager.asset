@@ -6,6 +6,8 @@ TagManager:
   tags:
   - Wall
   - Achtergrond
+  - Goed
+  - Fout
   layers:
   - Default
   - TransparentFX
