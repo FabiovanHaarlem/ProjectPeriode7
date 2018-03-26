@@ -37,12 +37,15 @@ public class SongManager : MonoBehaviour
         //StartCoroutine(PlaySong());
 
     }
+
     private void Update()
     {
-        if(m_SongPart== 12)
-        {
-            m_SongPart = 0;
-        }
+
+    }
+
+    public float GetSongLength()
+    {
+        return m_AudioSource.clip.length;
     }
 
     private void LoadSongs()

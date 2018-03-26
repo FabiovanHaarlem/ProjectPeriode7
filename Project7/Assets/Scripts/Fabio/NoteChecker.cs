@@ -9,6 +9,9 @@ public class NoteChecker : MonoBehaviour
     private List<MiddleMusicNote> m_MiddleMusicNotes;
     public List<GameObject> s_Sprite;
 
+    private bool m_PlayingMusic;
+    private float m_SongTimer;
+
     public void GetMusicNotes(List<Node> musicNotes, List<MiddleMusicNote> middleMusicNotes)
     {
         m_MusicNotes = musicNotes;
@@ -17,44 +20,62 @@ public class NoteChecker : MonoBehaviour
 
     public void CheckIfMiddleNote(GameObject selectedMusicNote)
     {
-        Node musicNote = null;
-
-        for (int i = 0; i < m_MusicNotes.Count; i++)
+        if (!m_PlayingMusic)
         {
-            if (selectedMusicNote.name == m_MusicNotes[i].name)
+            Node musicNote = null;
+
+            for (int i = 0; i < m_MusicNotes.Count; i++)
             {
-                musicNote = m_MusicNotes[i];
-                break;
+                if (selectedMusicNote.name == m_MusicNotes[i].name)
+                {
+                    musicNote = m_MusicNotes[i];
+                    break;
+                }
             }
-        }
 
-        for (int i = 0; i < m_MiddleMusicNotes.Count; i++)
-        {
-            if (m_MiddleMusicNotes[i].GetID() == musicNote.GetID())
+            for (int i = 0; i < m_MiddleMusicNotes.Count; i++)
             {
-                musicNote.IsMiddleMusicNote();
-                s_Sprite[i].transform.position = new Vector3(m_MiddleMusicNotes[i].transform.position.x, m_MiddleMusicNotes[i].transform.position.y, -1);
-                
+                if (m_MiddleMusicNotes[i].GetID() == musicNote.GetID())
+                {
+                    musicNote.IsMiddleMusicNote();
+                    s_Sprite[i].transform.position = new Vector3(m_MiddleMusicNotes[i].transform.position.x, m_MiddleMusicNotes[i].transform.position.y, -1);
+
+                    musicNote = null;
+                    m_PlayingMusic = true;
+                    StartCoroutine(StaticInstanceManager.m_Instance.GetSongManager.PlaySongFragment());
+                    SetTabDelay(StaticInstanceManager.m_Instance.GetSongManager.GetSongLength());
+
+                    break;
+                }
+            }
+
+            if (musicNote != null)
+            {
+                musicNote.IsNotMiddleMusicNote();
                 musicNote = null;
-                StartCoroutine(StaticInstanceManager.m_Instance.GetSongManager.PlaySongFragment());
-
-                break;
             }
-            
-
         }
+    }
 
-        if (musicNote != null)
-        {
-            musicNote.IsNotMiddleMusicNote();
-            musicNote = null;
-        }
-
+    private void SetTabDelay(float songLength)
+    {
+        m_SongTimer = songLength;
     }
 	
 
 	void Update ()
     {
+
+        if (m_PlayingMusic)
+        {
+            m_SongTimer -= Time.deltaTime;
+
+            if (m_SongTimer <= 0f)
+            {
+                m_PlayingMusic = false;
+            }
+        }
+
 #if UNITY_ANDROID
         for (var i = 0; i < Input.touchCount; ++i)
         {
