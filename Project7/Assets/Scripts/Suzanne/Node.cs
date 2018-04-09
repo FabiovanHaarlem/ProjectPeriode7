@@ -84,6 +84,15 @@ public class Node : MonoBehaviour {
         gameObject.SetActive(true);
     }
 
+    public void ResetNode()
+    {
+        //set gameobject deactive
+        gameObject.SetActive(false);
+        transform.position = new Vector3();
+        gameObject.SetActive(true);
+    }
+
+
     public void Deactivate()
     {
         //set gameobject deactive
@@ -106,7 +115,7 @@ public class Node : MonoBehaviour {
         ////checks if is same ad middle node
         s_Particle.transform.position = this.transform.position;
         StartCoroutine(Particle());
-        StartCoroutine(DeactivateNode());
+        StartCoroutine(DeactivateNodeMiddle());
     }
 
     public void IsNotMiddleMusicNote()
@@ -121,10 +130,16 @@ public class Node : MonoBehaviour {
         yield return new WaitForSeconds(0);
         s_Particle.Play();
     }
-    IEnumerator DeactivateNode()
+
+    IEnumerator DeactivateNodeMiddle()
     {
         yield return new WaitForSeconds(0.5f);
         Deactivate();
+    }
+    IEnumerator DeactivateNode()
+    {
+        yield return new WaitForSeconds(0.5f);
+        ResetNode();
     }
     IEnumerator ParticleBad()
     {
