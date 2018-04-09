@@ -10,27 +10,36 @@ public class SongManager : MonoBehaviour
 
     //private AudioClip m_ActiveSong;
     private List<AudioClip> m_ActiveSongFragments;
-    private AudioClip m_ActiveSongFragment;
+    private List<AudioClip> m_SongsQue;
 
     private AudioSource m_AudioSource;
     [SerializeField] private NoteChecker s_Node;
 
     private int m_SongIndex;
     private int m_FragmentIndex;
+    private int m_FragmentsPlayed;
     private int m_SongPart;
     private float m_RemoveDelay;
 
     private int m_WholeSongIndex;
 
-    void Start ()
+    private bool m_SongsInQue;
+    private bool m_SongPlaying;
+
+    void Start()
     {
         m_ActiveSongFragments = new List<AudioClip>();
         m_Songs = new List<AudioClip>();
         m_SongFragments = new List<List<AudioClip>>();
         m_AudioSource = GetComponent<AudioSource>();
+        m_SongsQue = new List<AudioClip>();
         m_SongPart = 0;
         m_WholeSongIndex = 0;
         m_RemoveDelay = 0.08f;
+        m_SongsInQue = false;
+        m_SongPlaying = false;
+        m_FragmentIndex = 0;
+        m_FragmentsPlayed = 0;
         //LoadSongs();
         LoadSongFragments();
         SetActiveFragments();
@@ -38,14 +47,20 @@ public class SongManager : MonoBehaviour
 
     }
 
-    private void Update()
-    {
-
-    }
-
     public float GetSongLength()
     {
         return m_AudioSource.clip.length;
+    }
+
+    public void UpdateRing(int index, Vector3 position)
+    {
+        s_Node.s_Sprite[index].transform.position = position;
+    }
+
+    public void UpdateRing(int index1, Vector3 position1, int index2, Vector3 position2)
+    {
+        s_Node.s_Sprite[index1].transform.position = position1;
+        s_Node.s_Sprite[index2].transform.position = position2;
     }
 
     private void LoadSongs()
@@ -58,9 +73,27 @@ public class SongManager : MonoBehaviour
         }
     }
 
+
     private void LoadSongFragments()
     {
+        int randomNumber = Random.Range(0, 1);
         Object[] songFragments = Resources.LoadAll("SongFragments/Song1");
+
+        switch (randomNumber)
+        {
+            case 0:
+                songFragments = Resources.LoadAll("SongFragments/Song1");
+                break;
+            case 1:
+                songFragments = Resources.LoadAll("SongFragments/Song2");
+                break;
+            case 2:
+                songFragments = Resources.LoadAll("SongFragments/Song3");
+                break;
+            case 3:
+                songFragments = Resources.LoadAll("SongFragments/Song4");
+                break;
+        }
 
         int amountOfSongs = songFragments.Length / 4;
         int index = 0;
@@ -90,24 +123,78 @@ public class SongManager : MonoBehaviour
             s_Node.s_Sprite[i].transform.position = new Vector3(-3.719069f, 6.268066f, 0);
 
         }
-        m_WholeSongIndex++;
-        m_FragmentIndex = 0;
-        m_ActiveSongFragments = m_SongFragments[m_WholeSongIndex];
-    }
 
-    public IEnumerator PlaySongFragment()
-    {
-        m_AudioSource.clip = m_ActiveSongFragments[m_FragmentIndex];
-        m_AudioSource.Play();
-        yield return new WaitForSeconds(m_AudioSource.clip.length);
-        if (m_FragmentIndex == 3)
+        if (m_SongIndex == m_SongFragments.Count)
         {
-            StartCoroutine(PlaySong());
+            LoadSongFragments();
+            m_WholeSongIndex = 0;
         }
         else
         {
-            m_FragmentIndex++;
+            m_WholeSongIndex++;
+            m_FragmentIndex = 0;
+            m_FragmentsPlayed = 0;
+            m_ActiveSongFragments = m_SongFragments[m_WholeSongIndex];
         }
+    }
+
+    private void SelectNewSong()
+    {
+        LoadSongFragments();
+        m_WholeSongIndex = 0;
+
+        m_WholeSongIndex++;
+        m_FragmentIndex = 0;
+        m_FragmentsPlayed = 0;
+        SetActiveFragments();
+
+        for (int i = 0; i < s_Node.s_Sprite.Count; i++)
+        {
+            s_Node.s_Sprite[i].transform.position = new Vector3(-3.719069f, 6.268066f, 0);
+
+        }
+    }
+
+    public void PutSongFragmentInQue()
+    {
+        m_SongsQue.Add(m_ActiveSongFragments[m_FragmentIndex]);
+        m_SongsInQue = true;
+        m_FragmentIndex++;
+    }
+
+    private void Update()
+    {
+        if (m_SongsInQue && !m_SongPlaying)
+        {
+            PlaySongQue();
+        }
+    }
+
+    public void PlaySongQue()
+    {
+        if (m_SongsQue.Count >= 1)
+        {
+            StartCoroutine(PlaySongFragment());
+            m_SongPlaying = true;
+        }
+        else
+        {
+            m_SongsInQue = false;
+        }
+    }
+   
+    public IEnumerator PlaySongFragment()
+    {
+        m_AudioSource.clip = m_SongsQue[0];
+        m_AudioSource.Play();
+        yield return new WaitForSeconds(m_AudioSource.clip.length);
+        if (m_FragmentsPlayed == 3)
+        {
+            StartCoroutine(PlaySong());
+        }
+        m_SongsQue.RemoveAt(0);
+        m_SongPlaying = false;
+        m_FragmentsPlayed++;
 
         yield return new WaitForSeconds(2);
     }
@@ -142,6 +229,9 @@ public class SongManager : MonoBehaviour
                     yield return new WaitForSeconds(m_AudioSource.clip.length - m_RemoveDelay);
                 }
             }
+
+            StaticInstanceManager.m_Instance.GetGameManager.StartLevel();
+            SelectNewSong();
         }
         else
         {
